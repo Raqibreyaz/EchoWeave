@@ -12,3 +12,6 @@ wheels/
 node_modules
 static/
 uploads/
+dist/
+./index.html
+./script.js

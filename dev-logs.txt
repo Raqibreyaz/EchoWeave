@@ -1,0 +1,1 @@
+issue: server successfull handles request and creating and merging audio + video but client before receiving the response fails with error: "Failed to Fetch" while using debugger no issue appears

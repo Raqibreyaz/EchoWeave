@@ -2,14 +2,14 @@ from flask import Flask, request, send_file, after_this_request
 from murf_api import generate_voice
 from video_merge import merge_audio_video
 import os
-# from flask_cors import CORS
+from flask_cors import CORS
 
 
 # creating a flask applicaton
 app = Flask(__name__)
 
 # handling cors
-# CORS(app)
+CORS(app)
 
 UPLOAD_FOLDER = "uploads/"
 OUTPUT_FOLDER = "static/final_videos/"

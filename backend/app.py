@@ -45,14 +45,14 @@ def upload():
         @after_this_request
         def remove_file(response):
             try:
-                # os.remove(output_path)
+                os.remove(output_path)
                 os.remove(video_path)
             except Exception as e:
                 app.log_exception(f"Error deleting file: {e}")
             return response
 
         # sending the final file to client
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True,mimetype='video/mp4')
     except Exception as e:
         error = f"Error: {str(e)}".encode()
         print(error)

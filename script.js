@@ -22,7 +22,7 @@ videoInput.addEventListener("change", function () {
   const video = document.createElement("video");
   video.preload = "metadata";
 
-  video.onloadedmetadata = function (params) {
+  video.onloadedmetadata = function () {
     videoDuration = video.duration;
     checkMatch();
   };

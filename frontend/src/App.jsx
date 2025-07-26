@@ -1,10 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
 import UploadForm from "./components/UploadForm";
 import ScriptInput from "./components/ScriptInput";
-import VoiceDropdown from "./components/VoiceDropdown";
+import VoiceSelector from "./components/VoiceSelector";
 import GenerateButton from "./components/GenerateButton";
 import { createDownloadLink } from "./utils";
 import "./App.css";
+
+const voices = [
+  {
+    displayName: "Ken",
+    gender: "Male",
+    accent: "US & Canada",
+    voiceId: "en-US-ken",
+    availableStyles: [
+      "Conversational",
+      "Promo",
+      "Newscast",
+      "Storytelling",
+      "Calm",
+      "Furious",
+      "Angry",
+      "Sobbing",
+      "Sad",
+    ],
+  },
+  // You can add more voices here if needed later
+];
 
 function App() {
   const wpm = 110;
@@ -12,12 +33,14 @@ function App() {
   const videoDuration = useRef(0);
   const feedbackElement = useRef(null);
 
+  const [voices, setVoices] = useState([]);
   const [video, setVideo] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [script, setScript] = useState("");
-  const [voiceStyle, setVoiceStyle] = useState("");
+  const [voice, setVoice] = useState({ voiceId: "", style: "" });
   const [loading, setLoading] = useState(false);
 
+  // check matching of video duration over text
   useEffect(() => {
     if (video) {
       const videoUrl = URL.createObjectURL(video);
@@ -33,9 +56,19 @@ function App() {
     }
   }, [video]);
 
+  // check matching of text over video duration
   useEffect(() => {
     if (script) checkMatch();
   }, [script]);
+
+  // fetch voices from backend
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/voices`)
+      .then((res) => res.json())
+      .then((data) => {
+        setVoices(data);
+      });
+  }, []);
 
   const handleGenerate = async () => {
     if (!video || !script || !voiceStyle) {
@@ -47,10 +80,11 @@ function App() {
     const formData = new FormData();
     formData.append("video", video);
     formData.append("text", script);
-    formData.append("voice_id", voiceStyle);
+    formData.append("voice_id", voice.voiceId);
+    formData.append("voice_style", voice.style);
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/upload", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -118,7 +152,7 @@ function App() {
         <h1>EchoWeave UI</h1>
         <UploadForm setVideo={setVideo} previewUrl={previewUrl} />
         <ScriptInput script={script} setScript={setScript} />
-        <VoiceDropdown voiceStyle={voiceStyle} setVoiceStyle={setVoiceStyle} />
+        <VoiceSelector voices={voices} onChange={setVoice} />
         <p className="feedback" ref={feedbackElement}></p>
         <GenerateButton loading={loading} onClick={handleGenerate} />
       </div>

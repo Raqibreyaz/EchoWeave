@@ -116,6 +116,24 @@ select > option{
   margin-bottom: 5px  ;
 }
 
+.voice-selector {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.voice-selector .field {
+  margin-bottom: 20px;
+}
+
+.voice-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4aa9ff;
+  font-size: 1rem;
+}
+
+
 /* Animation */
 @keyframes fadeIn {
   from {

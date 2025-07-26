@@ -1,85 +1,102 @@
+/* Reset */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
-body, html, #root {
-  margin: 0;
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
-}
 
-.app {
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1f1f2e, #28284d, #191928);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f8f9fa, #e2eafe);
-  height: 100%;
   padding: 20px;
+  color: #fff;
 }
 
-.card {
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  max-width: 500px;
+/* Glassmorphism container */
+.container {
   width: 100%;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
   text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-h1 {
-  margin-bottom: 1.5rem;
-  color: #333;
+.container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #4aa9ff;
 }
 
-.field {
-  margin-bottom: 1.2rem;
-  text-align: left;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.field input[type="file"],
-.field textarea,
-.field select {
+/* Inputs & textarea */
+input[type="file"],
+textarea,
+select {
   width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-.video-preview {
-  margin-top: 0.5rem;
-  width: 100%;
-  border-radius: 8px;
-}
-
-textarea {
-  resize: vertical;
-  height: 120px;
-}
-
-.generate-btn {
-  width: 100%;
-  padding: 0.9rem;
-  background: #4a90e2;
-  color: white;
+  margin: 15px 0;
+  padding: 12px 15px;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  outline: none;
+  resize: none;
+  transition: 0.3s;
+}
+
+textarea::placeholder {
+  color: #ccc;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  background: #4aa9ff;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: 0.3s;
 }
 
-.generate-btn:hover {
-  background: #357ab8;
+input[type="file"]::-webkit-file-upload-button:hover {
+  background: #1f8fff;
 }
 
-.generate-btn:disabled {
-  background: #9fbce0;
-  cursor: not-allowed;
+/* Button */
+button {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #4aa9ff, #1f8fff);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(45deg, #1f8fff, #4aa9ff);
+  transform: scale(1.05);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

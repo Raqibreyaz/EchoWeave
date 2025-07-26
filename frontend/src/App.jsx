@@ -55,8 +55,6 @@ function App() {
         body: formData,
       });
 
-      console.log(res);
-
       if (res.status != 200) {
         const errText = await res.text();
         throw new Error(`Server Error: ${errText}`);

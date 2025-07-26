@@ -2,4 +2,4 @@
 - server allows the cross origin request ✅
 - server converts the text to audio ✅
 - merges the audio+video ✅
-- send the final video to client 
+- send the final video to client ✅

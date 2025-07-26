@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ScriptInput = ({ script, setScript }) => (
-  <div className="field">
+  <div>
     <label>📝 Script</label>
     <textarea
       value={script}

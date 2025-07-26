@@ -113,13 +113,13 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <div className="card">
+    <div className="container">
+      <div>
         <h1>EchoWeave UI</h1>
         <UploadForm setVideo={setVideo} previewUrl={previewUrl} />
         <ScriptInput script={script} setScript={setScript} />
         <VoiceDropdown voiceStyle={voiceStyle} setVoiceStyle={setVoiceStyle} />
-        <p ref={feedbackElement} style={{ color: "black" }}></p>
+        <p className="feedback" ref={feedbackElement}></p>
         <GenerateButton loading={loading} onClick={handleGenerate} />
       </div>
     </div>

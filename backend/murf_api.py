@@ -23,7 +23,7 @@ def generate_voice(text, voice_id):
     text_hash = get_hash(text+voice_id)
 
     # create path from the hash
-    path = f"uploads/{text_hash}.mp3"
+    path = f"uploads/{text_hash}.wav"
     
     # check if we have cached the voice already then provide it's path
     if os.path.isfile(path):

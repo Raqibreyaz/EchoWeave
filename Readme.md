@@ -25,7 +25,7 @@
 ### 🔧 Setup Instructions
 
 1. **Clone the project**
-   `git clone https://github.com/your-username/echo-weave.git`
+   `git clone https://github.com/Raqibreyaz/EchoWeave.git`
 
 2. **Open in two VS Code windows**
    One for the frontend, one for the backend

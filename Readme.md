@@ -2,6 +2,8 @@
 
 **EchoWeave** is a smart, lightweight tool that lets users add natural AI-generated voiceovers to silent videos. It takes your video, a script, and a preferred voice/style, then returns a fully synced, downloadable video — all in a single click.
 
+**Watch On Youtube:** [Link](https://youtu.be/zyPUEpSny_8)
+
 ### ✨ Features
 
 * Generate **human-like AI voices** using MURF AI

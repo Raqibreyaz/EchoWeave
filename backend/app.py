@@ -80,9 +80,8 @@ def upload_():
         return send_file(output_path, as_attachment=True,mimetype='video/mp4')
     except Exception as e:
         error = f"Error: {str(e)}".encode()
-        print(error)
         return error
 
-
+# only for local testing
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='0.0.0.0')

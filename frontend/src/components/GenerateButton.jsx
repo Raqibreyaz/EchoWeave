@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from "react";
 
-const GenerateButton = ({ onClick, loading }) => (
+const GenerateButton = memo(({ onClick, loading }) => (
   <button onClick={onClick} disabled={loading}>
-    {loading ? 'Generating...' : '🚀 Generate Voiceover'}
+    {loading ? "Generating..." : "🚀 Generate Voiceover"}
   </button>
-);
+));
 
 export default GenerateButton;

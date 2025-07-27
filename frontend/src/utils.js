@@ -3,8 +3,10 @@ export function createDownloadLink(blob, filename = "video.mp4") {
   // create url for the data
   const url = URL.createObjectURL(blob);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
+  return () => {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+  };
 }

@@ -1,10 +1,23 @@
-- issue: server successfull handles request and creating and merging audio + 
-        video but client before receiving the response fails with error: "Failed to Fetch" while using debugger no issue appears
-  fix: added mimtype at backend so that browser can know what type of data is being received
+- issue: server successfull handles request and creating and merging audio 
+         + video but client before receiving the response fails with error: "Failed to Fetch" while using debugger no issue appears
+    fix: added mimtype at backend so that browser can know what type of data is being received
 
 - issue: on windows, got errors related to moviepy compatibility because of 
          ffmpeg
-    fix: downgraded python version from 3.14 to 3.12 as new 3.14 not 
+    fix: downgraded python version from 3.14 to 3.12 as new 3.14 not widely supportive for ffmpeg yet
 
 - issue: converting text to speech with extension .mp3 not compatible
     fix: fixed by changing .mp3 to .wav
+
+- issue: audio needed to be exact the same duration of video
+    fix: added audio duration in generating voice from text using the video duration
+
+- issue: after generating the audio res was a url of the resource
+    fix: downloaded and saved the reseource into file after generating
+
+- issue: re-rendering becomes expensive due to functions and components
+    fix: optimised using useCallback and memo to avoid unnecessary re-rendering
+
+- issue: even after just generating the voice right away, it again 
+          generates as no donwload link was provided
+    fix: added another download button to download

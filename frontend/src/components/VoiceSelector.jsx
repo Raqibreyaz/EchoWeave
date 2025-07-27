@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 
-export default function VoiceSelector({ voices, onChange }) {
+export default memo(function VoiceSelector({ voices, onChange }) {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState("");
 
   const handleVoiceChange = (e) => {
-    const voice = voices.find((v) => v.voiceId === e.target.value);
+    const voice = voices.find((v) => v.voice_id === e.target.value);
     setSelectedVoice(voice);
     setSelectedStyle("");
-    onChange?.({ voiceId: voice.voiceId, style: "" });
+    onChange?.({ voice_id: voice.voice_id, style: "" });
   };
 
   const handleStyleChange = (e) => {
     setSelectedStyle(e.target.value);
-    onChange?.({ voiceId: selectedVoice.voiceId, style: e.target.value });
+    onChange?.({ voice_id: selectedVoice.voice_id, style: e.target.value });
   };
 
   return (
@@ -23,12 +23,12 @@ export default function VoiceSelector({ voices, onChange }) {
         <select
           id="voice-select"
           onChange={handleVoiceChange}
-          value={selectedVoice?.voiceId || ""}
+          value={selectedVoice?.voice_id || ""}
         >
           <option value="">-- Choose Voice --</option>
           {voices.map((voice) => (
-            <option key={voice.voiceId} value={voice.voiceId}>
-              {`${voice.displayName} (${voice.gender}, ${voice.accent})`}
+            <option key={voice.voice_id} value={voice.voice_id}>
+              {`${voice.display_name} (${voice.gender}, ${voice.accent})`}
             </option>
           ))}
         </select>
@@ -43,7 +43,7 @@ export default function VoiceSelector({ voices, onChange }) {
             value={selectedStyle}
           >
             <option value="">-- Choose Style --</option>
-            {selectedVoice.availableStyles.map((style) => (
+            {selectedVoice.available_styles.map((style) => (
               <option key={style} value={style}>
                 {style}
               </option>
@@ -53,4 +53,4 @@ export default function VoiceSelector({ voices, onChange }) {
       )}
     </div>
   );
-}
+});

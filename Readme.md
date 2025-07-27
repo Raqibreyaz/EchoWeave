@@ -1,78 +1,87 @@
-# EchoWeave
+# 📘 EchoWeave
 
-EchoWeave is a simple yet powerful tool that transforms muted video into audible form by adding audio from the provided text. It is designed to bridge the gap between written and audiovisual communication, making content more accessible and expressive.
+**EchoWeave** is a smart, lightweight tool that lets users add natural AI-generated voiceovers to silent videos. It takes your video, a script, and a preferred voice/style, then returns a fully synced, downloadable video — all in a single click.
 
-✨ Features
+### ✨ Features
 
-* Convert any textual content into spoken audio using TTS (Text-to-Speech) of MURF AI.
-* Accepts user input through a web frontend.
-* Cross-platform setup using uv (Python package manager) for consistent environments.
+* Generate **human-like AI voices** using MURF AI
+* Automatically **merge audio with video** using MoviePy
+* Support for **re-download** without re-generating
+* **SHA256 hash-based caching** to avoid redundant API calls
+* Optimized React frontend with `useCallback` and `memo`
+* Flask backend using `uv` as a Python package manager
 
-📦 Technologies Used
+### ⚙️ Tech Stack
 
-* Python
-* flask
-* pyttsx3 for offline text-to-speech
-* Frontend using HTML/CSS/JS (you can plug into any frontend)
+* Frontend: React (Vite + Tailwind)
+* Backend: Flask (Python 3.12)
+* Text-to-Speech: MURF AI
+* Audio/Video Processing: MoviePy
+* Dependency Management: uv
+* Hashing: SHA256 (for caching and filename uniqueness)
 
+### 🔧 Setup Instructions
 
-🚀 Getting Started
+1. **Clone the project**
+   `git clone https://github.com/your-username/echo-weave.git`
 
-Follow the steps below to get the project running on your machine. These instructions are compatible with Windows, macOS, and Linux.
+2. **Open in two VS Code windows**
+   One for the frontend, one for the backend
+   `code frontend` and `code backend`
 
-🔧 Prerequisites
+---
 
-Make sure you have Python 3.11+ installed.
+#### Frontend Setup
 
-Check with:
+* Make sure Node.js version is 20 or higher
+* Run the following commands:
+  `npm install`
+  `npm run dev`
 
-```bash
-python --version
-```
+---
 
-If you don't have Python, download it from: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+#### Backend Setup
 
-📦 Install uv (Universal Virtualenv)
+* Install `uv` if not already installed: `pip install uv`
+* Then run:
+  `uv venv`
+  `uv run app.py`
 
-uv is a fast Python package manager and virtual environment manager. Install it globally:
+This will automatically install dependencies and launch the Flask server.
 
-On Linux/macOS:
+---
 
-```bash
-curl -Ls https://astral.sh/uv/install.sh | sh
-```
+#### Frontend Page
+![home page](./assets/EchoWeave-Home.png)
 
-On Windows (PowerShell):
+### 🧠 Caching System
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
+EchoWeave hashes a combination of `text + voice + style` using SHA256. If an identical request is made again, it retrieves the audio from cache instead of re-calling the MURF API. This saves time and reduces API costs.
 
-Or using pipx (cross-platform):
+---
 
-```bash
-pipx install uv
-```
+### 🛠 Common Issues and Fixes
 
-To verify:
+* **Browser “Failed to fetch” error**
+  *Fix:* Add proper MIME type to the Flask response.
 
-```bash
-uv --version
-```
+* **MoviePy errors on Windows (related to ffmpeg)**
+  *Fix:* Downgrade Python from 3.14 to 3.12.
 
-📥 Running the Server
+* **Incompatible `.mp3` files**
+  *Fix:* Use `.wav` format instead for better compatibility.
 
-Once uv is installed, run below these for working backend:
+* **Mismatch between video and audio durations**
+  *Fix:* Ensure voice is generated to match video duration exactly.
 
-```bash
-code backend
-uv run app.py
-```
+* **Voice re-generated unnecessarily**
+  *Fix:* Provide a separate download button to fetch the result again without a new request.
 
-This installs all necessary Python packages using uv and starts server.
+---
 
-📥 Running the Client
+### 🗺 Directory Structure
 
-- Now start the frontend using live server or live preview, the index.html file
-- You will see this interface
-![](./assets/echoweave-client.png)
+* `frontend/` — React app
+* `backend/` — Flask app with all processing logic
+
+---

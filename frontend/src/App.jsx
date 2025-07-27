@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import UploadForm from "./components/UploadForm";
 import ScriptInput from "./components/ScriptInput";
 import VoiceSelector from "./components/VoiceSelector";
@@ -6,82 +6,97 @@ import GenerateButton from "./components/GenerateButton";
 import { createDownloadLink } from "./utils";
 import "./App.css";
 
-const voices = [
-  {
-    displayName: "Ken",
-    gender: "Male",
-    accent: "US & Canada",
-    voiceId: "en-US-ken",
-    availableStyles: [
-      "Conversational",
-      "Promo",
-      "Newscast",
-      "Storytelling",
-      "Calm",
-      "Furious",
-      "Angry",
-      "Sobbing",
-      "Sad",
-    ],
-  },
-  // You can add more voices here if needed later
-];
+const WPM = 110;
 
 function App() {
-  const wpm = 110;
-
   const videoDuration = useRef(0);
-  const feedbackElement = useRef(null);
+  const feedbackRef = useRef(null);
+  const downloadHandlerRef = useRef(null);
 
   const [voices, setVoices] = useState([]);
   const [video, setVideo] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [script, setScript] = useState("");
-  const [voice, setVoice] = useState({ voiceId: "", style: "" });
+  const [voice, setVoice] = useState({ voice_id: "", style: "" });
   const [loading, setLoading] = useState(false);
-
-  // check matching of video duration over text
-  useEffect(() => {
-    if (video) {
-      const videoUrl = URL.createObjectURL(video);
-      setPreviewUrl(videoUrl);
-
-      const videoElem = document.createElement("video");
-      videoElem.src = videoUrl;
-      videoElem.preload = "metadata";
-      videoElem.onloadedmetadata = () => {
-        videoDuration.current = videoElem.duration;
-        checkMatch();
-      };
-    }
-  }, [video]);
-
-  // check matching of text over video duration
-  useEffect(() => {
-    if (script) checkMatch();
-  }, [script]);
 
   // fetch voices from backend
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/voices`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("no of voices: ", data.length);
         setVoices(data);
-      });
+      })
+      .catch((err) => alert("failed to fetch voices", err));
   }, []);
 
-  const handleGenerate = async () => {
-    if (!video || !script || !voiceStyle) {
+  // check matching of video duration over text
+  useEffect(() => {
+    if (!video) return;
+
+    const videoUrl = URL.createObjectURL(video);
+    setPreviewUrl(videoUrl);
+
+    const videoElem = document.createElement("video");
+    videoElem.src = videoUrl;
+    videoElem.preload = "metadata";
+    videoElem.onloadedmetadata = () => {
+      videoDuration.current = videoElem.duration;
+      checkMatch();
+    };
+
+    return () => URL.revokeObjectURL(videoUrl);
+  }, [video]);
+
+
+  // check matching of text over video duration
+  useEffect(() => {
+    if (script) checkMatch();
+  }, [script]);
+
+
+  const checkMatch = useCallback(function () {
+    const text = script.trim();
+    const wordCount = text.split(/\s+/).filter(Boolean).length;
+
+    // get the estimated audio duration in seconds
+    const estimatedAudioDuration = (wordCount / WPM) * 60;
+
+    if (videoDuration.current === 0) {
+      feedbackRef.current.innerText = "please upload a video";
+      return;
+    }
+
+    const diff = estimatedAudioDuration - videoDuration.current;
+
+    if (Math.abs(diff) <= 0.5) {
+      feedbackRef.current.innerText =
+        "✅ Perfect match between text and video duration.";
+    } else if (diff > 0.5) {
+      feedbackRef.current.innerText = `⚠️ Text is too long. Reduce by approx ${Math.ceil(
+        (diff * WPM) / 60
+      )} word(s).`;
+    } else {
+      feedbackRef.current.innerText = `⚠️ Text is too short. Add approx ${Math.ceil(
+        (-diff * WPM) / 60
+      )} word(s).`;
+    }
+  },[script]);
+
+  const handleGenerate = useCallback(async () => {
+    if (!video || !script || !voice.voice_id || !voice.style) {
       alert("Please fill all fields.");
       return;
     }
 
-    setLoading(true);
     const formData = new FormData();
     formData.append("video", video);
     formData.append("text", script);
-    formData.append("voice_id", voice.voiceId);
+    formData.append("voice_id", voice.voice_id);
     formData.append("voice_style", voice.style);
+
+    setLoading(true);
 
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload`, {
@@ -105,8 +120,8 @@ function App() {
       const unique = new Date().toISOString().replace(/[:.]/g, "-");
       const filename = `video-${unique}.mp4`;
 
-      // // create download link and allow user to download
-      createDownloadLink(videoBlob, filename);
+      // create download link and allow user to download
+      downloadHandlerRef.current = createDownloadLink(videoBlob, filename);
     } catch (error) {
       console.error(
         "Error:",
@@ -116,45 +131,25 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
-
-  function checkMatch() {
-    const text = script.trim();
-    const wordCount = text.split(/\s+/).filter(Boolean).length;
-
-    // get the estimated audio duration in seconds
-    const estimatedAudioDuration = (wordCount / wpm) * 60;
-
-    if (videoDuration.current === 0) {
-      feedbackElement.current.innerText = "please upload a video";
-      return;
-    }
-
-    const diff = estimatedAudioDuration - videoDuration.current;
-
-    if (Math.abs(diff) <= 0.5) {
-      feedbackElement.current.innerText =
-        "✅ Perfect match between text and video duration.";
-    } else if (diff > 0.5) {
-      feedbackElement.current.innerText = `⚠️ Text is too long. Reduce by approx ${Math.ceil(
-        (diff * wpm) / 60
-      )} word(s).`;
-    } else {
-      feedbackElement.current.innerText = `⚠️ Text is too short. Add approx ${Math.ceil(
-        (-diff * wpm) / 60
-      )} word(s).`;
-    }
-  }
+  }, [video, script, voice,setLoading]);
 
   return (
     <div className="container">
       <div>
-        <h1>EchoWeave UI</h1>
+        <h1>EchoWeave</h1>
         <UploadForm setVideo={setVideo} previewUrl={previewUrl} />
         <ScriptInput script={script} setScript={setScript} />
         <VoiceSelector voices={voices} onChange={setVoice} />
-        <p className="feedback" ref={feedbackElement}></p>
+        <p className="feedback" ref={feedbackRef}></p>
         <GenerateButton loading={loading} onClick={handleGenerate} />
+        {downloadHandlerRef.current && (
+          <button
+            className="download-button"
+            onClick={() => downloadHandlerRef.current?.()}
+          >
+            Download Video
+          </button>
+        )}
       </div>
     </div>
   );

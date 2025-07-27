@@ -2,6 +2,7 @@ import os
 
 from flask_cors import CORS
 from flask import Flask, request, send_file, after_this_request
+from moviepy import VideoFileClip
 
 import constants
 from video_merge import merge_audio_video
@@ -48,15 +49,18 @@ def upload_():
         # taking video, text for audio, and voice_id from request
         video = request.files['video']
         text = request.form['text']
-        voice_id = request.form.get['voice_id']
+        voice_id = request.form['voice_id']
         voice_style = request.form['voice_style']
 
         # save the video to the upload folder
-        video_path = os.path.join(UPLOAD_FOLDER, video.filename)
+        video_path = os.path.join(constants.UPLOAD_FOLDER, video.filename)
         video.save(video_path)
 
+        # extracting video clip for video duration
+        video_clip = VideoFileClip(video_path)
+
         # generate audio from the text using the chosen voice and style
-        audio_path = generate_voice(text, voice_id,voice_style)
+        audio_path = generate_voice(text, voice_id,voice_style,video_clip.duration)
 
         # merge the generated audio with the received video
         output_path = merge_audio_video(video_path, audio_path)

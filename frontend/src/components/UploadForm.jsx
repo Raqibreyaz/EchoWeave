@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { memo } from "react";
 
-const UploadForm = ({ setVideo, previewUrl }) => (
+const UploadForm = memo(({ setVideo, previewUrl }) => (
   <div>
     <label>🎬 Upload Video</label>
-    <input type="file" accept="video/*" onChange={e => {
+    <input
+      type="file"
+      accept="video/*"
+      onChange={(e) => {
         const file = e.target.files[0];
         setVideo(file);
-    }} />
-    { previewUrl &&
+      }}
+    />
+    {previewUrl && (
       <video src={previewUrl} controls className="video-preview" />
-    }
+    )}
   </div>
-);
+));
 
 export default UploadForm;

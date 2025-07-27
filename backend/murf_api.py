@@ -1,39 +1,45 @@
 import requests
-import pyttsx3
 import os
 import json
 from utils import get_hash
 from murf import Murf
 
-engine = pyttsx3.init()
+# a client to connect with the MURF AI
 client = Murf(api_key=os.getenv("MURF_API_KEY"))
 
 # generates voice from the provided text with the id,style attributes
-def generate_voice(text, voice_id,voice_style):
+def generate_voice(text, voice_id,voice_style,duration):
     
-    # create a 32 bytes unique hash string for the text+voice_id
-    text_hash = get_hash(text+voice_id)
+    # create a 32 bytes unique hash string for the text+voice_id+style
+    text_hash = get_hash(f"{text}{voice_id}{voice_style}")
 
     # create path from the hash
     path = f"uploads/{text_hash}.wav"
     
     # check if we have cached the voice already then provide it's path
-    if os.path.isfile(path):
+    if os.path.isfile(path) and os.path.getsize(path):
+        print("serving audio from cache")
         return path
 
+    # generate voice from the text
     res = client.text_to_speech.generate(
         text=text,
         voice_id=voice_id,
         format='WAV',
         channel_type="STEREO",
         sample_rate=44100,
-        style=voice_style
+        style=voice_style,
+        audio_duration=duration
     )
 
-    # create the audio and save it in the file
-    # engine.setProperty('rate',110)
-    # engine.save_to_file(text,path)
-    # engine.runAndWait()
+    print("converted text to speech")
+
+    # downloading the audio file
+    audio_res = requests.get(res.audio_file)
+    with open(path,"wb") as f:
+        f.write(audio_res.content)
+
+    print("downloaded audio file...")
 
     return path
 
